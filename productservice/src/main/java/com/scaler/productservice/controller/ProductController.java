@@ -1,10 +1,8 @@
 package com.scaler.productservice.controller;
 
-import com.scaler.productservice.config.dto.User;
+import com.scaler.productservice.dto.User;
 import com.scaler.productservice.entities.Product;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.loadbalancer.Response;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -25,10 +23,15 @@ public class ProductController {
         product.setProductName("Beards and shears hemp face wash");
         product.setProductPrice(249.00);
 
-        ResponseEntity<User> response = restTemplate.getForEntity("http://userservice/user/details/"+userId,User.class);
-        User user = response.getBody();
+        User user = restTemplate.getForObject("http://userservice/user/details/"+userId,User.class);
         System.out.println("here is role "+user.getRole());
-        product.setPublic(true);
-        return product;
+        product.setPublic(false);
+        if(product.isPublic()){
+            return product;
+        }
+        else if(user.getRole().equals("Admin")){
+            return product;
+        }
+        return null;
     }
 }

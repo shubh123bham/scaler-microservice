@@ -12,6 +12,7 @@ public class UserController {
 
     @GetMapping("/details/{userid}")
     public User userDetails(@PathVariable int userid){
+        System.out.println("user id "+userid);
         User user = new User();
         user.setUserId(userid);
         user.setUsername("Shubham Mishra");
